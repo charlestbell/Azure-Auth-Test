@@ -4,7 +4,10 @@ import { CLIENT_SECRET_KEY } from "@env";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AzureInstance, AzureLoginView } from "react-native-azure-ad-2";
+import {
+  AzureInstance,
+  AzureLoginView,
+} from "@shedaltd/react-native-azure-ad-2";
 import RCTNetworking from "react-native/Libraries/Network/RCTNetworking";
 
 const { Navigator, Screen } = createNativeStackNavigator();
