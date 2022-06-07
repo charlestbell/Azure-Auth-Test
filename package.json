@@ -9,9 +9,11 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.4",
     "@react-navigation/native-stack": "^6.2.2",
+    "@react-navigation/stack": "^6.2.1",
     "@shedaltd/react-native-azure-ad-2": "^2.0.1",
     "ad-b2c-react-native": "^1.1.5",
     "expo": "^44",
+    "expo-secure-store": "~11.1.0",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.7",
