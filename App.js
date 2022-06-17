@@ -12,8 +12,6 @@ import {
 import { LoginView } from "ad-b2c-react-native";
 import RCTNetworking from "react-native/Libraries/Network/RCTNetworking";
 import * as SecureStore from "expo-secure-store";
-import { WebView } from "react-native-webview";
-// const msal = require("@azure/msal-node");
 
 const { Navigator, Screen } = createNativeStackNavigator();
 const buttonColour = Platform.OS === "ios" ? "#fff" : "#007AFF";
@@ -100,29 +98,13 @@ const SignInScreen = ({ navigation }) => {
     EDIT_PROFILE: "update_profile",
   };
 
+  console.log("SECURE STORE APP.JS ", SecureStore);
+
   if (!loginSuccess) {
     return (
-      // <WebView
-      //   userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"
-      //   incognito
-      //   originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
-      //   source={getAuthCode(
-      //     process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY,
-      //     [],
-      //     APP_STATES.LOGIN
-      //   )} // Removed , res
-      //   // onNavigationStateChange={this.onNavigationStateChangeAsync}
-      //   // onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
-      //   renderLoading={spinner}
-      //   startInLoadingState
-      //   onError={onFail}
-      //   ref={(c) => {
-      //     this.webView = c;
-      //   }}
-      // />
       <LoginView
-        appId="e99fff16-1114-457b-ae72-1e220abfe568"
-        redirectURI="http://localhost:3000/redirect"
+        appId="07c5b055-02c4-443d-be97-c4e635603ba2"
+        redirectURI="https://sharpsmountain.b2clogin.com/oauth2/nativeclient"
         tenant="sharpsmountain"
         loginPolicy="B2C_1_SharpsUserFlow"
         passwordResetPolicy="B2C_1_password_reset"
@@ -131,7 +113,7 @@ const SignInScreen = ({ navigation }) => {
         onFail={onFail}
         secureStore={SecureStore}
         renderLoading={spinner}
-        scope="openid profile offline_access" //optional, but see the notes above
+        scope="openid profile offline_access"
       />
     );
   }
