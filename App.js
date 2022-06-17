@@ -142,32 +142,9 @@ const SignInScreen = ({ navigation }) => {
 export default function App() {
   return (
     <NavigationContainer>
-      <Navigator>
-        <Screen name="Home" component={HomeScreen} />
-        <Screen name="SignIn" component={SignInScreen} />
-      </Navigator>
+      <AppNavigator />
     </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 4,
-  },
-  title: {
-    textAlign: "center",
-    marginVertical: 8,
-  },
-  text: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5,
-  },
-});
+export default App;
