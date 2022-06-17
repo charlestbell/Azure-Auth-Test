@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { CLIENT_SECRET_KEY } from "@env";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -8,7 +9,11 @@ import {
   AzureInstance,
   AzureLoginView,
 } from "@shedaltd/react-native-azure-ad-2";
+import { LoginView } from "ad-b2c-react-native";
 import RCTNetworking from "react-native/Libraries/Network/RCTNetworking";
+import * as SecureStore from "expo-secure-store";
+import { WebView } from "react-native-webview";
+// const msal = require("@azure/msal-node");
 
 const { Navigator, Screen } = createNativeStackNavigator();
 const buttonColour = Platform.OS === "ios" ? "#fff" : "#007AFF";
@@ -72,12 +77,61 @@ const SignInScreen = ({ navigation }) => {
       },
     ]);
 
+  const onLogin = (credentials) => {
+    console.log("LOGIN SUCCESS ", credentials);
+  };
+
+  const onFail = (credentials) => {
+    console.log("LOGIN FAIL", credentials);
+  };
+  // style={{ alignItems: "center", justifyContent: "center" }
+  const spinner = () => {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="small" />
+      </View>
+    );
+  };
+
+  const APP_STATES = {
+    LOGIN: "login",
+    LOGOUT: "logout",
+    PASSWORD_RESET: "password_reset",
+    EDIT_PROFILE: "update_profile",
+  };
+
   if (!loginSuccess) {
     return (
-      <AzureLoginView
-        azureInstance={azureInstance}
-        loadingMessage="Requesting access token again"
-        onSuccess={onLoginSuccess}
+      // <WebView
+      //   userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"
+      //   incognito
+      //   originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
+      //   source={getAuthCode(
+      //     process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY,
+      //     [],
+      //     APP_STATES.LOGIN
+      //   )} // Removed , res
+      //   // onNavigationStateChange={this.onNavigationStateChangeAsync}
+      //   // onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
+      //   renderLoading={spinner}
+      //   startInLoadingState
+      //   onError={onFail}
+      //   ref={(c) => {
+      //     this.webView = c;
+      //   }}
+      // />
+      <LoginView
+        appId="e99fff16-1114-457b-ae72-1e220abfe568"
+        redirectURI="http://localhost:3000/redirect"
+        tenant="sharpsmountain"
+        loginPolicy="B2C_1_SharpsUserFlow"
+        passwordResetPolicy="B2C_1_password_reset"
+        profileEditPolicy="B2C_1_edit_profile"
+        onSuccess={onLogin}
+        onFail={onFail}
+        secureStore={SecureStore}
+        renderLoading={spinner}
+        scope="openid profile offline_access" //optional, but see the notes above
       />
     );
   }
