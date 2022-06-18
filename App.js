@@ -113,7 +113,7 @@ const SignInScreen = ({ navigation }) => {
         onFail={onFail}
         secureStore={SecureStore}
         renderLoading={spinner}
-        scope="openid profile offline_access"
+        scope="openid profile offline_access 07c5b055-02c4-443d-be97-c4e635603ba2"
       />
     );
   }
@@ -142,9 +142,32 @@ const SignInScreen = ({ navigation }) => {
 export default function App() {
   return (
     <NavigationContainer>
-      <AppNavigator />
+      <Navigator>
+        <Screen name="Home" component={HomeScreen} />
+        <Screen name="SignIn" component={SignInScreen} />
+      </Navigator>
     </NavigationContainer>
   );
-};
+}
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 4,
+  },
+  title: {
+    textAlign: "center",
+    marginVertical: 8,
+  },
+  text: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5,
+  },
+});
