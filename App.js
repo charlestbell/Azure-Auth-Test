@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
 import { CLIENT_SECRET_KEY } from "@env";
 import { StyleSheet, Text, View, Button, Alert } from "react-native";
@@ -9,7 +9,7 @@ import {
   AzureInstance,
   AzureLoginView,
 } from "@shedaltd/react-native-azure-ad-2";
-import { LoginView } from "ad-b2c-react-native";
+import { LoginView, LogoutView } from "ad-b2c-react-native";
 import RCTNetworking from "react-native/Libraries/Network/RCTNetworking";
 import * as SecureStore from "expo-secure-store";
 
@@ -17,6 +17,27 @@ const { Navigator, Screen } = createNativeStackNavigator();
 const buttonColour = Platform.OS === "ios" ? "#fff" : "#007AFF";
 
 const HomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    const fetchIdToken = async () => {
+      console.log("USE EFFECT HIT");
+
+      const idToken = await SecureStore.getItemAsync("idToken");
+      console.log("ID TOKEN ", idToken);
+    };
+    fetchIdToken();
+  });
+
+  const clearLogin = async () => {
+    await Promise.all([
+      SecureStore.deleteItemAsync("tokenType"),
+      SecureStore.deleteItemAsync("accessToken"),
+      SecureStore.deleteItemAsync("idToken"),
+      SecureStore.deleteItemAsync("refreshToken"),
+      SecureStore.deleteItemAsync("expiresOn"),
+    ]);
+    console.log("LOGIN CLEARED");
+  };
+
   return (
     <View style={styles.container}>
       <Text>Get ready to login to Azure</Text>
@@ -26,6 +47,20 @@ const HomeScreen = ({ navigation }) => {
           title="Sign In"
           style={styles.title}
           color={buttonColour}
+          accessibilityLabel="Learn more about this purple button"
+        />
+        <Button
+          onPress={() => navigation.navigate("SignOut")}
+          title="Sign Out"
+          style={styles.title}
+          color={"black"}
+          accessibilityLabel="Learn more about this purple button"
+        />
+        <Button
+          onPress={clearLogin}
+          title="Clear Login"
+          style={styles.title}
+          color={"Grey"}
           accessibilityLabel="Learn more about this purple button"
         />
       </View>
@@ -75,8 +110,8 @@ const SignInScreen = ({ navigation }) => {
       },
     ]);
 
-  const onLogin = (credentials) => {
-    console.log("LOGIN SUCCESS ", credentials);
+  const onLogin = () => {
+    navigation.navigate("Home");
   };
 
   const onFail = (credentials) => {
@@ -113,7 +148,7 @@ const SignInScreen = ({ navigation }) => {
         onFail={onFail}
         secureStore={SecureStore}
         renderLoading={spinner}
-        scope="openid profile offline_access"
+        scope="openid profile offline_access 07c5b055-02c4-443d-be97-c4e635603ba2"
       />
     );
   }
@@ -145,6 +180,7 @@ export default function App() {
       <Navigator>
         <Screen name="Home" component={HomeScreen} />
         <Screen name="SignIn" component={SignInScreen} />
+        <Screen name="SignOut" component={SignOutScreen} />
       </Navigator>
     </NavigationContainer>
   );
@@ -171,3 +207,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+export const SignOutScreen = ({ navigation, ...props }) => {
+  const onSuccess = () => {
+    console.log("LOGOUT SUCCESS");
+    navigation.navigate("Home");
+  };
+
+  const onFail = (reason) => {
+    Alert.alert(reason);
+  };
+
+  const spinner = () => {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="small" />
+      </View>
+    );
+  };
+
+  return (
+    <LogoutView onSuccess={onSuccess} onFail={onFail} renderLoading={spinner} />
+  );
+};
